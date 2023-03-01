@@ -86,7 +86,7 @@ pub fn run(args: Args) -> Result<i32> {
         return Ok(1);
     };
 
-    let temp_file = NamedTempFile::new().context("Failed to craete a temporary file")?;
+    let temp_file = NamedTempFile::new().context("Failed to create a temporary file")?;
     let temp_file_path = temp_file.path();
 
     let histfile_locker = HistFileLocker::new(histfile);
