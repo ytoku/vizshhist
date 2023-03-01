@@ -1,13 +1,13 @@
 mod lock;
 mod meta;
 
-use std::process::Command;
-
-use anyhow::{ensure, Context as _, Result};
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
+use std::process::Command;
+
+use anyhow::{ensure, Context as _, Result};
 use tempfile::NamedTempFile;
 
 use crate::lock::HistFileLocker;
