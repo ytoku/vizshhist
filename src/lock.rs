@@ -12,9 +12,9 @@ struct FcntlLockGuard {
     _file: File,
 }
 
-fn fcntl_lock(path: &Path) -> Result<FcntlLockGuard> {
+fn fcntl_lock(path: &Path, write: bool) -> Result<FcntlLockGuard> {
     let file = OpenOptions::new()
-        .create(true)
+        .create(write)
         .read(true)
         .write(true)
         .open(path)
@@ -47,11 +47,11 @@ impl HistFileLocker {
         }
     }
 
-    pub fn lock_during<F>(&self, f: F) -> Result<()>
+    pub fn lock_during<F>(&self, write: bool, f: F) -> Result<()>
     where
         F: FnOnce() -> Result<()>,
     {
-        let _fcntl_lock = fcntl_lock(&self.histfile_path)?;
+        let _fcntl_lock = fcntl_lock(&self.histfile_path, write)?;
         // TODO: symlink based lock
 
         f()
