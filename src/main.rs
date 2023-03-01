@@ -4,5 +4,6 @@ use vizshhist::Args;
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    vizshhist::run(args)
+    let exitcode = vizshhist::run(args)?;
+    std::process::exit(exitcode);
 }

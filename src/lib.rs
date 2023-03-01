@@ -4,6 +4,7 @@ mod meta;
 use std::process::Command;
 
 use anyhow::{ensure, Context as _, Result};
+use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
@@ -15,8 +16,7 @@ use crate::meta::{metafy, unmetafy};
 #[derive(clap::Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-    // TODO: Option<String>
-    histfile: PathBuf,
+    histfile: Option<PathBuf>,
 }
 
 fn run_command(command: &mut Command) -> Result<()> {
@@ -76,12 +76,21 @@ fn is_empty(path: &Path) -> Result<bool> {
     Ok(buf[0] == b'\n')
 }
 
-pub fn run(args: Args) -> Result<()> {
+pub fn run(args: Args) -> Result<i32> {
+    let Some(histfile) = &args.histfile.or_else(|| {
+        env::var_os("HOME")
+            .map(PathBuf::from)
+            .map(|home| home.join(".zsh_history"))
+    }) else {
+        eprintln!("no HOME environment variable");
+        return Ok(1);
+    };
+
     let temp_file = NamedTempFile::new().context("Failed to craete a temporary file")?;
     let temp_file_path = temp_file.path();
 
-    let histfile_locker = HistFileLocker::new(&args.histfile);
-    histfile_locker.lock_during(false, || unmetafy_file(&args.histfile, temp_file_path))?;
+    let histfile_locker = HistFileLocker::new(histfile);
+    histfile_locker.lock_during(false, || unmetafy_file(histfile, temp_file_path))?;
 
     // We want to force vim to open the file in UTF-8 encoding.
     // But unfortunately --cmd option will be overwritten by .vimrc file.
@@ -94,11 +103,11 @@ pub fn run(args: Args) -> Result<()> {
     )?;
     if is_empty(temp_file_path)? {
         println!("Cancelled");
-        return Ok(());
+        return Ok(0);
     }
 
     // TODO: new record check
 
-    histfile_locker.lock_during(true, || metafy_file(temp_file_path, &args.histfile))?;
-    Ok(())
+    histfile_locker.lock_during(true, || metafy_file(temp_file_path, histfile))?;
+    Ok(0)
 }
