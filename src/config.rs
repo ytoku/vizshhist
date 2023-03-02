@@ -6,7 +6,9 @@ use dirs::config_dir;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Default)]
-pub struct ViZshHistConfig {}
+pub struct ViZshHistConfig {
+    pub editor: Option<String>,
+}
 
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {

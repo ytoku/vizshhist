@@ -1,4 +1,5 @@
 mod config;
+mod editor;
 mod lock;
 mod meta;
 
@@ -6,12 +7,12 @@ use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
-use anyhow::{ensure, Context as _, Result};
+use anyhow::{Context as _, Result};
 use tempfile::NamedTempFile;
 
 use crate::config::load_config;
+use crate::editor::run_editor;
 use crate::lock::HistFileLocker;
 use crate::meta::{metafy, unmetafy};
 
@@ -19,12 +20,6 @@ use crate::meta::{metafy, unmetafy};
 #[command(author, version, about, long_about = None)]
 pub struct Args {
     histfile: Option<PathBuf>,
-}
-
-fn run_command(command: &mut Command) -> Result<()> {
-    let exit_status = command.spawn()?.wait()?;
-    ensure!(exit_status.success(), "Command failed");
-    Ok(())
 }
 
 #[inline]
@@ -79,7 +74,7 @@ fn is_empty(path: &Path) -> Result<bool> {
 }
 
 pub fn run(args: Args) -> Result<i32> {
-    let _config = load_config()?;
+    let config = load_config()?;
 
     let Some(histfile) = &args.histfile.or_else(|| {
         env::var_os("HOME")
@@ -96,10 +91,7 @@ pub fn run(args: Args) -> Result<i32> {
     let histfile_locker = HistFileLocker::new(histfile);
     histfile_locker.lock_during(false, || unmetafy_file(histfile, temp_file_path))?;
 
-    run_command(
-        // TODO: make configurable. EDITOR / config file
-        Command::new("vim").arg(temp_file_path),
-    )?;
+    run_editor(temp_file_path, &config)?;
     if is_empty(temp_file_path)? {
         println!("Cancelled");
         return Ok(0);
