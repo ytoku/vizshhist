@@ -1,3 +1,4 @@
+mod config;
 mod lock;
 mod meta;
 
@@ -10,6 +11,7 @@ use std::process::Command;
 use anyhow::{ensure, Context as _, Result};
 use tempfile::NamedTempFile;
 
+use crate::config::load_config;
 use crate::lock::HistFileLocker;
 use crate::meta::{metafy, unmetafy};
 
@@ -77,6 +79,8 @@ fn is_empty(path: &Path) -> Result<bool> {
 }
 
 pub fn run(args: Args) -> Result<i32> {
+    let _config = load_config()?;
+
     let Some(histfile) = &args.histfile.or_else(|| {
         env::var_os("HOME")
             .map(PathBuf::from)
