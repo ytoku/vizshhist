@@ -25,3 +25,16 @@ To edit a specific file:
 ```
 vizshhist filename
 ```
+
+## Configuration
+
+The configuration file is `~/.config/vizshhist/config.toml`.
+
+You can specify a command to run your text editor in `editior` option.
+
+```toml
+[vizshhist]
+editor = "/usr/bin/vim --cmd 'set fileencodings=utf-8'"
+```
+
+If `editor` option is not set in the configuration file, vizshhist checks `VISUAL` and `EDITOR` environment variable. Moreover if these environment variables are not set, vizshhist uses `/usr/bin/editor`.
