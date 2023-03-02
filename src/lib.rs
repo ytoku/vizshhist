@@ -92,14 +92,9 @@ pub fn run(args: Args) -> Result<i32> {
     let histfile_locker = HistFileLocker::new(histfile);
     histfile_locker.lock_during(false, || unmetafy_file(histfile, temp_file_path))?;
 
-    // We want to force vim to open the file in UTF-8 encoding.
-    // But unfortunately --cmd option will be overwritten by .vimrc file.
     run_command(
         // TODO: make configurable. EDITOR / config file
-        Command::new("vim")
-            .arg("--cmd")
-            .arg("set fileencodings=utf-8")
-            .arg(temp_file_path),
+        Command::new("vim").arg(temp_file_path),
     )?;
     if is_empty(temp_file_path)? {
         println!("Cancelled");
