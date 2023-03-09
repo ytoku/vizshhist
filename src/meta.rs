@@ -31,8 +31,7 @@ pub fn unmetafy(bytes: &[u8], text: &mut Vec<u8>) {
     text.clear();
     text.reserve(bytes.len());
     let mut p = bytes.iter();
-    loop {
-        let Some(&c1) = p.next() else { break };
+    while let Some(&c1) = p.next() {
         let c = match c1 {
             META => match p.next() {
                 Some(&c2) => c2 ^ 32,
