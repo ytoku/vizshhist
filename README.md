@@ -8,6 +8,15 @@ This tool decodes `zsh_history` file to a temporary file then launches the text 
 
 ## Install
 
+## from pre-built binaries
+
+Download a tar ball from [releases](https://github.com/ytoku/vizshhist/releases) page, and extract and copy the `vizshhist` file to a directory in `$PATH` such as `/usr/local/bin`.
+
+- For x86-64 (amd64) GNU/Linux system: `vizshhist-*-x86_64-unknown-linux-musl.tar.gz`
+- For aarch64 (arm64) GNU/Linux system: `vizshhist-*-aarch64-unknown-linux-musl.tar.gz`
+
+## from source code
+
 ```
 cargo install --git https://github.com/ytoku/vizshhist.git
 ```
