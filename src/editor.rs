@@ -21,7 +21,9 @@ fn find_editor(config: &Config) -> Result<Vec<String>> {
         }
     }
     for key in &["VISUAL", "EDITOR"] {
-        let Some(value) = env::var_os(key) else { continue };
+        let Some(value) = env::var_os(key) else {
+            continue;
+        };
         if value.is_empty() {
             continue;
         };
