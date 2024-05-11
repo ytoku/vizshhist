@@ -8,13 +8,13 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.69"
 clap = { version = "4.1.7", features = ["derive"] }
-dirs = "4.0.0"
+dirs = "5.0.1"
 libc = "0.2.139"
-nix = { version = "0.26.2", features = ["fs"], default-features = false }
+nix = { version = "0.28.0", features = ["fs"], default-features = false }
 serde = { version = "1.0.152", features = ["derive"] }
 shell-words = "1.1.0"
 tempfile = "3.4.0"
-toml = "0.7.2"
+toml = "0.8.12"
 
 [profile.release]
 lto = true
