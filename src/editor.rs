@@ -6,7 +6,7 @@ use anyhow::{bail, ensure, Context as _, Result};
 
 use crate::config::Config;
 
-const DEFAULT_EDITOR_COMMAND: &str = "/usr/bin/editor";
+const DEFAULT_EDITOR_COMMANDS: &[&str] = &["/usr/bin/editor", "/usr/bin/vi", "/usr/bin/nano"];
 
 fn run_command(command: &mut Command) -> Result<()> {
     let exit_status = command.spawn()?.wait()?;
@@ -37,7 +37,12 @@ fn find_editor(config: &Config) -> Result<Vec<String>> {
         // https://github.com/sudo-project/sudo/blob/b013711e489b917b80d73d42656b3bc05c26d3e7/plugins/sudoers/editor.c#L137
         return shell_words::split(command).context("Invalid editor command");
     }
-    Ok(vec![DEFAULT_EDITOR_COMMAND.to_owned()])
+    for &command in DEFAULT_EDITOR_COMMANDS {
+        if Path::new(command).exists() {
+            return Ok(vec![command.to_owned()]);
+        }
+    }
+    bail!("No editor found")
 }
 
 pub fn run_editor<P: AsRef<Path>>(file_path: P, config: &Config) -> Result<()> {
