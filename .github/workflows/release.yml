@@ -47,10 +47,12 @@ jobs:
 
     - name: Archive artifacts
       run: |
-        cd target/${{ matrix.job.target }}/release/
-        tar zcvf vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}.tar.gz vizshhist
+        mkdir -p dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}
+        cp target/${{ matrix.job.target }}/release/vizshhist LICENSE dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}/
+        cd dist/
+        tar zcvf vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}.tar.gz vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}/
 
     - name: Upload artifacts
       uses: softprops/action-gh-release@v2
       with:
-        files: target/${{ matrix.job.target }}/release/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}.tar.gz
+        files: dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}.tar.gz
