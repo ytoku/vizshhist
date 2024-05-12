@@ -1,0 +1,23 @@
+[graph]
+targets = [
+    { triple = "x86_64-unknown-linux-musl", features = [] },
+    { triple = "aarch64-unknown-linux-musl", features = [] },
+]
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "MPL-2.0",
+    "BSD-3-Clause",
+    "Unicode-DFS-2016",
+]
+confidence-threshold = 0.8
+exceptions = []
+
+[bans]
+multiple-versions = "warn"
+wildcards = "allow"
+highlight = "all"
+workspace-default-features = "allow"
+external-default-features = "allow"
