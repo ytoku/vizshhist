@@ -3,3 +3,4 @@
 *.sw[a-z]
 
 /target
+/LICENSES.html
