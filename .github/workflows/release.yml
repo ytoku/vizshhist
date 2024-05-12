@@ -29,6 +29,9 @@ jobs:
     runs-on: ${{ matrix.job.os }}
 
     steps:
+    - name: Setup cargo-about
+      run: cargo install --locked cargo-about
+
     - name: Setup aarch64-unknown-linux cross compiler
       if: startsWith(matrix.job.target, 'aarch64-unknown-linux-')
       run: |
@@ -45,10 +48,15 @@ jobs:
     - name: Build
       run: cargo build --release --target ${{ matrix.job.target }}
 
+    - name: Generate licenses file
+      run: |
+        echo 'targets = ["${{ matrix.job.target }}"]' >> about.toml
+        cargo about generate -o LICENSES.html about.hbs
+
     - name: Archive artifacts
       run: |
         mkdir -p dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}
-        cp target/${{ matrix.job.target }}/release/vizshhist LICENSE dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}/
+        cp target/${{ matrix.job.target }}/release/vizshhist LICENSES.html dist/vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}/
         cd dist/
         tar zcvf vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}.tar.gz vizshhist-${{ github.ref_name }}-${{ matrix.job.target }}/
 
