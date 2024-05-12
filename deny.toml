@@ -1,7 +1,11 @@
 [graph]
 targets = [
+    { triple = "x86_64-unknown-linux-gnu", features = [] },
     { triple = "x86_64-unknown-linux-musl", features = [] },
+    { triple = "aarch64-unknown-linux-gnu", features = [] },
     { triple = "aarch64-unknown-linux-musl", features = [] },
+    { triple = "x86_64-apple-darwin", features = [] },
+    { triple = "aarch64-apple-darwin", features = [] },
 ]
 
 [licenses]
