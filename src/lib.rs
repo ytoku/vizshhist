@@ -23,12 +23,10 @@ pub struct Args {
 }
 
 #[inline]
-fn transform_file<F>(src_path: &Path, dst_path: &Path, f: F) -> Result<()>
+fn transform_file<F>(src_path: &Path, dst_path: &Path, mut f: F) -> Result<()>
 where
     F: FnMut(&[u8], &mut Vec<u8>),
 {
-    let mut f = f;
-
     let mut reader = BufReader::new(File::open(src_path)?);
     let mut writer = BufWriter::new(File::create(dst_path)?);
 
