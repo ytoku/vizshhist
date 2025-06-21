@@ -42,7 +42,7 @@ The configuration file is:
 - GNU/Linux: `~/.config/vizshhist/config.toml`
 - macOS: `~/Library/Application Support/vizshhist/config.toml`
 
-You can specify a command to run your text editor in `editior` option.
+You can specify a command to run your text editor in `editor` option.
 
 ```toml
 [vizshhist]
